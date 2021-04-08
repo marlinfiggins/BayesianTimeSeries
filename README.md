@@ -67,3 +67,4 @@ FourierSeasonality(n_F_nodes, period)
 - Work on a method for inference using [Stan](https://github.com/stan-dev/stan) and [CmdStan.jl](https://github.com/StanJulia/CmdStan.jl)
 - Work on a method for inference using [AdvancedHMC.jl](https://github.com/TuringLang/AdvancedHMC.jl)
 - Add explicit support for lack of `times` and `Vector(Date)`.
+- Add support for least squares fit using `\`.
