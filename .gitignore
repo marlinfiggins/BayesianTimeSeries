@@ -1,13 +1,5 @@
-################################################################################
-#                          DrWatson Project Structure                          #
-################################################################################
-
-# Folders to ignore - files may be too large, too many, etc. NOTE: EDIT IF NEEDED.
-data
-videos
 plots
 notebooks
-_research
 
 ################################################################################
 #                                    Julia                                     #
@@ -39,27 +31,6 @@ docs/site/
 
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
-
-################################################################################
-#                               Microsoft Office                               #
-################################################################################
-
-*.tmp
-
-# Word temporary
-~$*.doc*
-
-# Word Auto Backup File
-Backup of *.doc*
-
-# Excel temporary
-~$*.xls*
-
-# Excel Backup File
-*.xlk
-
-# PowerPoint temporary
-~$*.ppt*
 
 ################################################################################
 #                                    LaTeX                                     #
