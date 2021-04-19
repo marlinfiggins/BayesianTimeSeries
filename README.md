@@ -1,6 +1,6 @@
-# Bayesian_Time_Series
+# Bayesian Time Series Models
 
-Test project for fun. Slowly building out methods for doing Bayesian estimation of time series data. As it stands, this project is mostly borrowing from [TimeSeers](https://github.com/MBrouns/timeseers) in Python.
+Slowly building out methods for doing hierarchical Bayesian inference and prediction for time series data. As it stands, this project is mostly borrowing from [TimeSeers](https://github.com/MBrouns/timeseers) in Python and Facebook's prophet.
 
 ## Features
 
@@ -29,7 +29,7 @@ sample_chain(chain, num_samples)
 
 There is also support for sampling directly from the predictive distribution of the chain with
 ```julia
-sample_predictive(new_TS, times, chain, num_samples)
+sample_predictive(model, times, chain, num_samples)
 ```
 
 ### Time Series Nodes
