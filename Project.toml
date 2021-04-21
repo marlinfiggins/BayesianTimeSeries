@@ -1,5 +1,4 @@
-name = "Bayesian_Time_Series"
-[compat]
-julia = "1.5.2"
-[deps]
-DrWatson = "634d3b9d-ee7a-5ddf-bec9-22491ea816e1"
+name = "BayesTS"
+uuid = "730bde8b-6467-4b20-aee6-81f641af8983"
+authors = ["marlinfiggins <marlinfiggins@gmail.com>"]
+version = "0.1.0"

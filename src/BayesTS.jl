@@ -28,4 +28,5 @@ include("FourierSeasonality.jl")
 include("LinearTrend.jl")
 include("TuringInference.jl")
 include("InferenceHelpers.jl")
-end
+
+end # module
