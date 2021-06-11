@@ -1,23 +1,17 @@
-
-struct FourierSeasonality{T, V} <: TimeSeriesNode where {T <: Int, V <: Real}
-    F_Nodes::T
-    Period::V
-end
-
-function FourierSeasonality(Nodes::T, Period::V) where {T<: Int, V <: Real}
-    return FourierSeasonality{T, V}(Nodes, Period)
+struct FourierSeasonality <: SeasonalityNode
+    F_Nodes::T where {T <: Int}
+    Period::V where {V <: Real}
 end
 
 params(TS::FourierSeasonality) = (TS.F_Nodes, TS.Period)
-params_shape(TS::FourierSeasonality) = (TS.F_Nodes, 2)
-get_components(TS::FourierSeasonality) = TS
-get_priors(TS::FourierSeasonality) = fill(Distributions.Normal(0.0, 10.0), params_shape(TS)) # for each index 
+params_shape(TS::FourierSeasonality) = 2 * TS.F_Nodes
+get_priors(TS::FourierSeasonality) = [Normal(0.0, 10.0)] # for each index 
 
-function (TS::FourierSeasonality{T,V})(β, t)  where {T <: Int, V <: Real}
-    N = TS.F_Nodes
-    trig_args = hcat([2*π* n * t / TS.Period for n in 1:TS.F_Nodes]...)
-
-    return sum( (β[:,1]' .* cos.(trig_args)) + (β[:,2]' .* sin.(trig_args)), dims = 2)
+function (TS::FourierSeasonality)(β, t) 
+    return get_design(TS, t) * β
 end
-## On a sum, we'll recursively call for parameters / params size
-## THis will allow us to set priors~! 
+
+function get_design(TS::FourierSeasonality, t)
+    trig_args = reduce(hcat, 2 * π * n * t / TS.Period for n in 1:TS.F_Nodes)    
+    return hcat(sin.(trig_args), cos.(trig_args))  
+end
