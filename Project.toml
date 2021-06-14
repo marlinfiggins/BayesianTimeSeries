@@ -2,3 +2,6 @@ name = "BayesTS"
 uuid = "730bde8b-6467-4b20-aee6-81f641af8983"
 authors = ["marlinfiggins <marlinfiggins@gmail.com>"]
 version = "0.1.0"
+
+[deps]
+CmdStan = "593b3428-ca2f-500c-ae53-031589ec8ddd"
