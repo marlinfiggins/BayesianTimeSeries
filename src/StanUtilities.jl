@@ -69,3 +69,21 @@ function add_priors(model_file, model, priors=nothing)
 
     return model_file
 end
+
+function add_observation_model(model_file, obs_dist)
+    if obs_dist == "normal" || isnothing(obs_dist)
+        model_file = replace(model_file, "// ADD_Y_INIT" => "vector[T] Y;")
+        model_file = replace(model_file, "// ADD_OBS_PARMS" => "real<lower=0> sigma;")
+        model_file = replace(model_file, "// ADD_EY_TRANS" => "vector[T] EY = features * b;")
+        model_file = replace(model_file, "// ADD_OBS_PRIOR" => "sigma ~ exponential(0.5);")
+        model_file = replace(model_file, "// ADD_OBS_DIST" => "normal(EY, sigma);")
+    end
+    
+    if obs_dist == "poisson"
+        model_file = replace(model_file, "// ADD_Y_INIT" => "int Y[T];")
+        model_file = replace(model_file, "// ADD_EY_TRANS" => "vector[T] EY = features * b;")
+        model_file = replace(model_file, "// ADD_OBS_DIST" => "poisson_log(EY);")
+    end
+    
+    return model_file
+end

@@ -1,9 +1,11 @@
-function define_stan_model(TS::TimeSeriesNode, t; priors = nothing, num_samples = 2000)
+function define_stan_model(TS::TimeSeriesNode, t; priors = nothing, num_samples = 2000, obs_dist = nothing)
     # How do we decide which file to use?
 
     # Load Base File and add Priors
+    # Use joinpath and @__DIR__
     model_file = read("../src/stan/BayesTS.stan", String)
     model_file = add_priors(model_file, TS, priors)
+    model_file = add_observation_model(model_file, obs_dist)
 
     stan_model = SampleModel("BayesTS", model_file;
     method = StanSample.Sample(
@@ -40,11 +42,12 @@ end
 function sample_stan(
     TS::TimeSeriesNode,
     t,
-    priors,
-    data, 
-    num_samples = 5000)
+    data;
+    priors = nothing,
+    num_samples = 5000,
+    obs_dist = nothing)
 
-    stan_model = define_stan_model(TS, t; priors = priors, num_samples = num_samples)
+    stan_model = define_stan_model(TS, t; priors = priors, num_samples = num_samples, obs_dist = obs_dist)
     stan_data = make_stan_data(TS, t, data)
     rc, samples, cnames = run_stan_model(stan_model, stan_data)
     return samples, cnames

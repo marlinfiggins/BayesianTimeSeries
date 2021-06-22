@@ -29,6 +29,7 @@ export
     get_priors,
     get_prior_string,
     # sample_turing,
+    add_priors,
     sample_stan,
     get_posterior_beta,
     sample_posterior_predictive
