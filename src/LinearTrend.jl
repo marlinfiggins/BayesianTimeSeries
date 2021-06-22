@@ -7,7 +7,7 @@ function LinearTrend(N_change::T, max_T::V) where {T <: Int, V <: Real}
     return LinearTrend(N_change, Vector(LinRange(0, max_T, N_change+2))[2:end-1])
 end
 
-LinearTrend(s::Vector{T}) where {T <: Int} = LinearTrend{T}(length(s), s)
+LinearTrend(s::Vector{T}) where {T <: Real} = LinearTrend(length(s), s)
 
 params(TS::LinearTrend) = (TS.N_change, TS.s)
 params_shape(TS::LinearTrend) = Int(TS.N_change)
@@ -16,7 +16,7 @@ get_priors(TS::LinearTrend) = [Normal(0.0, 5.0)]
 
 function get_design(TS::LinearTrend, t)
     X = reduce(hcat, (t .- TS.s[k]) .* (t .> TS.s[k]) for k in 1:length(TS.s))
-    return hcat(t, X)
+    return hcat(t, X) ./ TS.s[end]
 end
 
 function (TS::LinearTrend)(δ, r0, t)
@@ -59,7 +59,7 @@ function ConstantTrend(N_change::T, max_T::V) where {T <: Int, V <: Real}
     return ConstantTrend(N_change, Vector(LinRange(0, max_T, N_change+2))[2:end-1])
 end
 
-ConstantTrend(s::Vector{T}) where {T <: Int} = ConstantTrend{T}(length(s), s)
+ConstantTrend(s::Vector{T}) where {T <: Int} = ConstantTrend(length(s), s)
 
 params(TS::ConstantTrend) = (TS.N_change, TS.s)
 params_shape(TS::ConstantTrend) = Int(TS.N_change)
@@ -93,3 +93,35 @@ end
 function get_design(TS::FlatTrend, t)
     return ones(eltype(t), size(t))
 end
+
+struct LogLinearTrend <: TrendNode  
+    N_change::T where {T <: Int}
+    s::Vector{V} where {V <: Real}
+end
+
+function LogLinearTrend(N_change::T, max_T::V) where {T <: Int, V <: Real} 
+    return LogLinearTrend(N_change, Vector(LinRange(0, max_T, N_change+2))[2:end-1])
+end
+
+LogLinearTrend(s::Vector{T}) where {T <: Real} = LogLinearTrend(length(s), s)
+
+params(TS::LogLinearTrend) = (TS.N_change, TS.s)
+params_shape(TS::LogLinearTrend) = Int(TS.N_change)
+get_components(TS::LogLinearTrend) = TS
+get_priors(TS::LogLinearTrend) = [Normal(0.0, 5.0)]
+
+log_where_positive(x) = @. ifelse(x > 0., log(x), 0.) 
+
+function get_design(TS::LogLinearTrend, t)
+    X = reduce(hcat, (t .- TS.s[k]) .* (t .> TS.s[k]) for k in 1:length(TS.s))
+    return log_where_positive(hcat(t, X) ./ TS.s[end])
+end
+
+function (TS::LogLinearTrend)(δ, r0, t)
+    return get_design(TS, t) * vcat(r0, δ)
+end
+
+function (TS::LogLinearTrend)(θ, t) 
+    return get_design(TS, t) * θ
+end
+
